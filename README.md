@@ -14,7 +14,7 @@ A simple tool to check and verify the presence and status of essential component
 
 1. Clone this repository:
    ```sh
-   git clone https://github.com/<YOUR_USERNAME>/Arduino-Components-Check.git
+   git clone https://github.com/avro1199/Arduino-Components-Check.git
    ```
 2. Open the project folder.
 
