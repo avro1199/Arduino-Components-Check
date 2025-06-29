@@ -1,0 +1,81 @@
+#######################################
+# GobbitLineCommand - Library for line following, intersection detection, and basic motor control of Gobbit robot.
+# Created by Jason Talley 
+# Last edit 05/04/2019
+# Released under GNU agreement
+#######################################
+# NOTE Tab sensitive -- single tab after datatype and before keyword(#)
+#######################################
+# Syntax Coloring Map GobbitLineCommand
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+GobbitLineCommand	KEYWORD1	
+
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+drive	KEYWORD2
+turn	KEYWORD2
+calibrateLineSensor	KEYWORD2
+followLine	KEYWORD2
+move	KEYWORD2
+setMotors	KEYWORD2
+brakeMotors	KEYWORD2
+gripClose	KEYWORD2
+gripOpen	KEYWORD2
+gripPercentOpen	KEYWORD2
+backup	KEYWORD2
+checkBattery	KEYWORD2
+readBatteryVolts	KEYWORD2
+serialPrintCurrentSettings	KEYWORD2
+beep	KEYWORD2
+readSonarInches	KEYWORD2
+detectLine	KEYWORD2
+catchLine	KEYWORD2
+QTRtest	KEYWORD2
+
+
+#######################################
+# setup and loop functions, as well as the Serial keywords (KEYWORD3)
+#######################################
+
+setGripPinOpenClosed	KEYWORD3
+setSonar	KEYWORD3
+setPID	KEYWORD3
+setPIDcoarse	KEYWORD3
+setPIDfineRange	KEYWORD3
+setQTRpins	KEYWORD3
+setTurnLowSpeed	KEYWORD3
+setTurnHighSpeed	KEYWORD3
+setMinMaxSpeeds	KEYWORD3
+setBatteryVolts	KEYWORD3
+setLeftMotorPinsDirPWM	KEYWORD3
+setRightMotorPinsDirPWM	KEYWORD3
+setBeeperPin	KEYWORD3
+setBrakeSpeed	KEYWORD3
+setBrakeStrength	KEYWORD3
+beginGobbit	KEYWORD3
+
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+
+#######################################
+# Built-in Variables (LITERAL2)
+#######################################
+
+foundLeft	LITERAL2
+foundForward	LITERAL2
+foundRight	LITERAL2
+foundEnd	LITERAL2
+foundMark	LITERAL2
+distanceInch	LITERAL2
+
