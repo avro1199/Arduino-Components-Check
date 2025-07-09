@@ -2,8 +2,10 @@
 #include "at24cxxx.h"
 #include "Arduino.h"
 
+#define MAX_ALLOWED_LEN_IN_REQUESTFROM (255)
+
 AT24Cxxx::AT24Cxxx(uint8_t address, TwoWire& i2c, int writeDelay, uint16_t size, uint8_t pageSize)  :
-  i2cAddress(address), size(size), twoWire(&i2c), writeDelay(writeDelay), pageSize(pageSize) {
+  i2cAddress(address), twoWire(&i2c), size(size), writeDelay(writeDelay), pageSize(pageSize) {
 }
 
 uint8_t
@@ -51,7 +53,7 @@ int
 AT24Cxxx::rawWriteBuffer(uint16_t address, const uint8_t* data, size_t len){
   lastError = 0;
   writeAddress(address);
-  int written = 0;
+  size_t written = 0;
   for (written = 0; written < len; written++) {
     // Not using twoWire's built in buffer write since it hides errors from write.
     if (twoWire->write(data[written]) != 1) {
@@ -104,13 +106,16 @@ AT24Cxxx::writeBuffer(uint16_t address, const uint8_t* data, size_t len){
 }
 
 int
-AT24Cxxx::readBuffer(uint16_t address, uint8_t* data, uint8_t len){
+AT24Cxxx::readBuffer(uint16_t address, uint8_t* data, size_t len){
   lastError = 0;
   uint8_t* dataPointer = data;
-  uint8_t lenRemaining = len;
+  size_t lenRemaining = len;
   uint16_t nextAddress = address;
   int totalread = 0;
   uint8_t numberOfReads = 0;
+  if (len == 0) {
+    return 0;
+  }
   do {
     // Since underlying layers will limit how many bytes we can actually read
     // in one go, we will try to read as many as possible, but see from the
@@ -122,8 +127,9 @@ AT24Cxxx::readBuffer(uint16_t address, uint8_t* data, uint8_t len){
       // If we got a hard error from the TwoWire bus, there is no point to continue
       break;
     }
-  	uint8_t readBytes = twoWire->requestFrom(i2cAddress, lenRemaining);
-  	int byteNumber;
+    size_t bytesToRead = min(lenRemaining, MAX_ALLOWED_LEN_IN_REQUESTFROM);
+  	size_t readBytes = twoWire->requestFrom(i2cAddress, bytesToRead);
+  	size_t byteNumber;
   	for(byteNumber = 0; (byteNumber < readBytes) && twoWire->available(); byteNumber++){
   		dataPointer[byteNumber] = twoWire->read();
   	}
