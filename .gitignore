@@ -1,2 +1,7 @@
-libraries
 /libraries
+/.vscode
+/.idea
+/.DS_Store
+/.vscode-test
+/.history
+/.cache
