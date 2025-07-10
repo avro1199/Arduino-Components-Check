@@ -1,4 +1,0 @@
-serialEEPROM	KEYWORD1
-write	KEYWORD2
-read	KEYWORD2
-dump	KEYWORD2
