@@ -210,7 +210,6 @@ void setup() {
 
 
 void loop() {
-  display.setTextSize()
 }
 
 
