@@ -1,5 +1,8 @@
 #include "HardwareTimer.h"
 
+#define debug_verbose
+// #define debug_minimum
+
 #define CHANNELS 8
 #define limit 60 // Limit for the PID output
 
@@ -83,9 +86,11 @@ void setup()
 
 void loop()
 {
-    target_angle = map(constrain(ppmValues[0], 1000, 2000), 1000, 2000, -35, 35); // Map PPM value to angle range
+    target_angle = map(constrain(ppmValues[0], 1030, 2010), 1030, 2010, -35, 35); // Map PPM value to angle range
+#ifdef debug_verbose
     Serial2.print("Target Angle: ");
     Serial2.println(target_angle);
+#endif
 
     speed = map(constrain(ppmValues[2], 1050, 2000), 1050, 2000, 0, 255); // Map PPM value to speed
     if (braked)
@@ -96,8 +101,10 @@ void loop()
     {
         analogWrite(accelarator, speed);
     }
+#ifdef debug_verbose
     Serial2.print("Speed: ");
     Serial2.println(speed);
+#endif
 
     // Control Forward/Backward Relay
     digitalWrite(relay_fr, ppmValues[4] > 1500 ? HIGH : LOW); // Forward if PPM value is above 1500
@@ -109,9 +116,11 @@ void loop()
         {
             braked = true;
             analogWrite(accelarator, 0); // Stop the motor
-            analogWrite(brake_mf, 250); // Brake motor forward
-            analogWrite(brake_mb, 0);   // Stop motor backward
+            analogWrite(brake_mf, 250);  // Brake motor forward
+            analogWrite(brake_mb, 0);    // Stop motor backward
+#if defined(debug_minimum) || defined(debug_verbose)
             Serial2.println("Brake applied, Motor stopped");
+#endif
             delay(700);               // Delay to allow motor to stop
             analogWrite(brake_mf, 0); // Release brake motor forward
             analogWrite(brake_mb, 0); // Release brake motor backward
@@ -124,7 +133,9 @@ void loop()
             braked = false;
             analogWrite(brake_mf, 0);   // Brake motor forward
             analogWrite(brake_mb, 250); // Stop motor backward
+#if defined(debug_minimum) || defined(debug_verbose)
             Serial2.println("Brake released, Motor running");
+#endif
             delay(500);               // Delay to allow motor to run
             analogWrite(brake_mf, 0); // Release brake motor forward
             analogWrite(brake_mb, 0); // Release brake motor backward
@@ -132,8 +143,10 @@ void loop()
     }
 
     int current_angle = measure_angle();
+#ifdef debug_verbose
     Serial2.print("Current Angle: ");
     Serial2.println(current_angle);
+#endif
 
     // Calculate PID control
     int error = target_angle - current_angle; // Calculate error
@@ -147,22 +160,28 @@ void loop()
     int output = kp * error + ki * integral + kd * derivative; // PID output
     previous_error = error;                                    // Update previous error for next iteration
     output = constrain(output, -limit, limit);                 // Constrain output to DAC range
+#if defined(debug_minimum) || defined(debug_verbose)
     Serial2.print("PID Output: ");
     Serial2.println(output);
+#endif
     // Write output to DAC
-    analogWrite(steering, constrain(207 + output, 10, 255)); // Write to DAC pin 25
+    analogWrite(steering, constrain(207 + output, 10, 255)); // Write to DAC pin
     delay(20);
 }
 
 int measure_angle()
 {
-    int analogValue = analogRead(steering_pot); // Use GPIO 34 as analog input
+    int analogValue = analogRead(steering_pot); // analog input
+#ifdef debug_verbose
     Serial2.print("Raw Value: ");
     Serial2.print(analogValue);
     Serial2.print(" | ");
+#endif
     analogValue = map(constrain(analogValue, 1300, 2500), 1300, 2500, -35, 35); // Map to a range of 0-100
+#ifdef debug_verbose
     Serial2.print("Current Angle: ");
     Serial2.print(analogValue);
     Serial2.println(" degrees");
+#endif
     return analogValue; // Return the target angle
 }
