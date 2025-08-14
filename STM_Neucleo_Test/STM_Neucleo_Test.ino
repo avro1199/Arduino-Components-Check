@@ -1,15 +1,19 @@
 void setup() {
-    pinMode(LED_BUILTIN, OUTPUT);
-    Serial2.begin(115200);
+  // DAC pins don't need pinMode() — they are handled internally
+    analogWriteResolution(12); // Set resolution to 12 bits
+    analogWriteFrequency(20000); // Set frequency for PA5 (DAC output)
 }
 
 void loop() {
-    digitalWrite(LED_BUILTIN, HIGH);  // Turn the LED on
-    Serial2.println("LED is ON");
-    delay(1000);
-    digitalWrite(LED_BUILTIN, LOW);   // Turn the LED off
-    Serial2.println("LED is OFF");
-    delay(1000);
-    // Add more functionality as needed
-    // For example, reading sensors, controlling motors, etc.
+  // Sweep from 0V to 3.3V
+  for (int val = 0; val <= 4095; val += 10) { // 12-bit DAC: 0–4095
+    analogWrite(PA6, val); // Output DAC voltage
+    delay(20);
+  }
+
+  // Sweep from 3.3V back to 0V
+  for (int val = 4095; val >= 0; val -= 10) {
+    analogWrite(PA6, val);
+    delay(20);
+  }
 }

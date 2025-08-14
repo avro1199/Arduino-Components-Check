@@ -1,6 +1,8 @@
 #include "HardwareTimer.h"
 
 #define CHANNELS 8
+
+
 volatile uint16_t ppmValues[CHANNELS];
 volatile uint8_t ppmIndex = 0;
 volatile uint32_t lastCapture = 0;
@@ -34,10 +36,11 @@ void setup()
     MyTim->setMode(1, TIMER_INPUT_CAPTURE_RISING, PA0); // channel 1, rising edge, pin
     MyTim->setOverflow(0xFFFF, MICROSEC_FORMAT);        // microsecond resolution
     MyTim->attachInterrupt(1, IC_Handler);              // channel, callback
-    MyTim->resume();
     MyTim->setInterruptPriority(0, 0); // highest priority
+    MyTim->resume();
 
     // --------------------------------------------------------------------------------------
+    pass;
 }
 
 void loop()
