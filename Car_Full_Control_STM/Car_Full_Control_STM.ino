@@ -1,10 +1,10 @@
 #include "HardwareTimer.h"
 
 #define debug_verbose
-// #define debug_minimum
+#define debug_minimum
 
 #define CHANNELS 8
-#define limit 60 // Limit for the PID output
+#define limit 40 // Limit for the PID output
 
 #define PPM_PIN PA0 // PPM input pin (A0)
 
@@ -13,6 +13,7 @@
 #define accelarator PA5  // DAC pin for accelerator output (D13)
 
 #define relay_fr PA7 // Relay pin for forward direction (D11)
+#define horn     PB6 // Horn relay pin (D10)
 #define brake_mf PC7 // Motor forward pin (D9)
 #define brake_mb PA6 // Motor backward pin (D12)
 
@@ -26,7 +27,7 @@ volatile uint32_t lastCapture = 0;
 int target_angle = 0; // Variable to store the target angle
 
 // pid variables
-float kp = 6, ki = 4.0, kd = 0; // PID coefficients
+float kp = 6, ki = 1.0, kd = 0; // PID coefficients
 int previous_error = 0;         // Previous error for PID
 int integral = 0;               // Integral term for PID
 
@@ -72,6 +73,7 @@ void setup()
     pinMode(brake_mf, OUTPUT); // Motor forward pin
     pinMode(brake_mb, OUTPUT); // Motor backward pin
     pinMode(relay_fr, OUTPUT); // Set relay pin as output
+    pinMode(horn, OUTPUT);
 
     analogReadResolution(12); // Set ADC resolution to 12 bits
     analogWriteResolution(8); // Set PWM/DAC resolution to 8 bits
@@ -82,10 +84,31 @@ void setup()
     analogWrite(brake_mf, 0);    // Initialize motor forward pin to 0
     analogWrite(brake_mb, 0);    // Initialize motor backward pin to 0
     digitalWrite(relay_fr, HIGH);
+    digitalWrite(horn, HIGH);
+
+    // for (int i = 100; i <= 255; i += 5)
+    // {
+    //     analogWrite(steering, i); // Initialize steering output
+    //     Serial2.print("Raw Value = ");
+    //     Serial2.print(i);
+    //     Serial2.println();
+    //     delay(5000);
+    // }
+    // Serial2.println("Measurement complete, starting main loop...");
+    // while(1) // Wait for a while before starting the main loop
+    // {
+    //     delay(1000);
+    // }
 }
 
 void loop()
 {
+    // for (int i = 0; i < CHANNELS; i++)
+    // {
+    //     Serial2.print(ppmValues[i]);
+    //     Serial2.print("  ");
+    // }
+    // Serial2.println();
     target_angle = map(constrain(ppmValues[0], 1030, 2010), 1030, 2010, -35, 35); // Map PPM value to angle range
 #ifdef debug_verbose
     Serial2.print("Target Angle: ");
@@ -107,7 +130,9 @@ void loop()
 #endif
 
     // Control Forward/Backward Relay
-    digitalWrite(relay_fr, ppmValues[4] > 1500 ? HIGH : LOW); // Forward if PPM value is above 1500
+    digitalWrite(relay_fr, ppmValues[4] > 1500 ? LOW : HIGH); // Forward if PPM value is above 1500
+    // Control Horn
+    digitalWrite(horn, ppmValues[3] < 1300 ? LOW : HIGH);
 
     // Control Motor Brake
     if (ppmValues[7] > 1500) // Brake if PPM value is above 1500
@@ -165,7 +190,7 @@ void loop()
     Serial2.println(output);
 #endif
     // Write output to DAC
-    analogWrite(steering, constrain(207 + output, 10, 255)); // Write to DAC pin
+    analogWrite(steering, constrain(196 + output, 10, 255)); // Write to DAC pin
     delay(20);
 }
 
@@ -177,7 +202,7 @@ int measure_angle()
     Serial2.print(analogValue);
     Serial2.print(" | ");
 #endif
-    analogValue = map(constrain(analogValue, 1300, 2500), 1300, 2500, -35, 35); // Map to a range of 0-100
+    analogValue = map(constrain(analogValue, 1500, 2720), 1500, 2720, -35, 35); // Map to a range of 0-100
 #ifdef debug_verbose
     Serial2.print("Current Angle: ");
     Serial2.print(analogValue);
