@@ -105,7 +105,7 @@ void loop()
         int steering = rcToSpeed((int)ch[0]); // CH1
         int throttle = rcToSpeed((int)ch[1]); // CH2
 
-        if (ch[7] > 1500 && throttle < 100) // CH8 for reverse
+        if (ch[7] > 1500 && throttle < -150) // CH8 for reverse
         {
             leftSpeed = constrain((throttle - steering), -((int)TOP_SPEED), (int)TOP_SPEED);
             rightSpeed = constrain((throttle + steering), -((int)TOP_SPEED), (int)TOP_SPEED);

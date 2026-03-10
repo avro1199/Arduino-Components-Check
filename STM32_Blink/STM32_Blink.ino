@@ -33,24 +33,24 @@ void setup() {
 // the loop function runs over and over again forever
 void loop() {
   // Serial.println("Namaste World!");
-  // digitalWrite(PC13, HIGH);  // turn the LED on (HIGH is the voltage level)
-  // delay(300);                // wait for a second
-  // digitalWrite(PC13, LOW);   // turn the LED off by making the voltage LOW
-  // delay(300);                // wait for a second
+  digitalWrite(PC13, HIGH);  // turn the LED on (HIGH is the voltage level)
+  delay(300);                // wait for a second
+  digitalWrite(PC13, LOW);   // turn the LED off by making the voltage LOW
+  delay(300);                // wait for a second
 
   // Serial.println("Namaste World!");
 
-  int val;
+  // int val;
 
-  val = analogRead(PA0);
-  Serial.print(val);
-  Serial.print(" -> ");
-  val = map(val, 0, 1023, 0, 255);
-  Serial.println(val);
+  // val = analogRead(PA0);
+  // Serial.print(val);
+  // Serial.print(" -> ");
+  // val = map(val, 0, 1023, 0, 255);
+  // Serial.println(val);
 
-  analogWrite(PA1, val);
+  // analogWrite(PA1, val);
 
-  delay(100);
+  // delay(100);
 
   
 }

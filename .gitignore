@@ -5,3 +5,5 @@
 /.vscode-test
 /.history
 /.cache
+/.build
+/.dist
