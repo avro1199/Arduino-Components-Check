@@ -5,41 +5,42 @@
 #include <printf.h>
 
 // Set the pins up
-#define CE_PIN   9
+#define CE_PIN 9
 #define CSN_PIN 10
 
 // A pipe is needed
 const uint64_t pipe = 0xE8E8F0F0E1LL; // Define the transmit pipe
 
 // Create a Radio
-RF24 radio(CE_PIN, CSN_PIN); 
+RF24 radio(CE_PIN, CSN_PIN);
 
-void setup() 
+void setup()
 {
   // Start Serial
   Serial.begin(115200);
-  while(!Serial);
-  
+  while (!Serial)
+    ;
+
   // Saying hello to you
   Serial.println("NRF24L01P test Script starting...");
   Serial.println("If you do not see a long message after this line, something is not right!");
-  
+
   // This is needed so that radio.printDetails(); actually works!!!!
   printf_begin();
-  
+
   // Start the radio
   radio.begin();
-  
+
   // Start the radio, again set ti min & slow as I'm guessing while testing theire really close to each oth
-  radio.setPALevel(RF24_PA_MIN);   // RF24_PA_MIN ,RF24_PA_LOW, RF24_PA_HIGH, RF24_PA_MAX
-  radio.setDataRate( RF24_250KBPS ); // RF24_250KBPS, RF24_1MBPS, RF24_2MBPS
-  
+  radio.setPALevel(RF24_PA_HIGH);   // RF24_PA_MIN ,RF24_PA_LOW, RF24_PA_HIGH, RF24_PA_MAX
+  radio.setDataRate(RF24_250KBPS); // RF24_250KBPS, RF24_1MBPS, RF24_2MBPS
+
   // Set the pipe
-  radio.openReadingPipe(1,pipe);
-  
+  radio.openReadingPipe(1, pipe);
+
   // Start listening
   radio.startListening();
-  
+
   // And cruically print the details
   radio.printDetails();
 }
